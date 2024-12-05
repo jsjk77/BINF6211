@@ -1,0 +1,21 @@
+---
+title: "temp"
+author: "JK"
+date: "2023-04-02"
+output: html_document
+---
+
+```{r}
+age <- read.table("./anage_data.txt", header=TRUE, sep="\t", quote="")
+
+
+selected_cols <- age[, c("HAGRID", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species", "Common.name","Specimen.origin", "Sample.size","Data.quality")]
+write.csv(selected_cols, file = "selected_cols.csv", row.names = FALSE)
+```
+
+```{r}
+genes <- read.table("./gene_result.txt", header=TRUE, sep="\t", fill=TRUE, quote = "", row.names = NULL, stringsAsFactors = FALSE)
+
+genes <- genes[, c("Org_name","GeneID","Status","Symbol","Aliases","description","other_designations","chromosome","genomic_nucleotide_accession.version","start_position_on_the_genomic_accession","end_position_on_the_genomic_accession","orientation","exon_count")]
+write.csv(genes, file = "genes.csv", row.names = FALSE)
+```

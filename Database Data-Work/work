@@ -1,0 +1,93 @@
+CREATE TABLE journals (
+    pmid INTEGER PRIMARY KEY,
+    title TEXT,
+    authors TEXT,
+    citation text,
+    first_author TEXT,
+    journal_book TEXT,
+    publication_year INTEGER,
+    create_date DATE,
+    pmcid TEXT,
+    nihmsid TEXT,
+    doi TEXT
+);
+
+CREATE TABLE zooanimals (
+    auto_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    animal_name TEXT,
+    scientific_name TEXT,
+    location TEXT
+);
+
+CREATE TABLE classification (
+    hagrid INTEGER PRIMARY KEY,
+    kingdom TEXT,
+    phylum TEXT, 
+    class TEXT,
+    order_ TEXT,
+    family TEXT,
+    genus TEXT,
+    species TEXT, 
+    common_name TEXT,
+    specimen_origin TEXT,
+    sample_size TEXT,
+    data_quality TEXT
+);
+
+CREATE TABLE genes (
+    org_name TEXT,
+    geneid INTEGER PRIMARY KEY,
+    status TEXT,
+    symbol TEXT,
+    aliases TEXT,
+    description TEXT,
+    other_designations TEXT,
+    chromosome TEXT,
+    gene_accession TEXT,
+    start_position NUMERIC,
+    end_position NUMERIC,
+    orientation TEXT,
+    exon_count NUMERIC
+);
+
+CREATE TABLE gene_species (
+    geneid INTEGER,
+    auto_id INTEGER,
+    PRIMARY KEY (geneid, auto_id),
+    FOREIGN KEY (geneid) REFERENCES genes(geneid),
+    FOREIGN KEY (auto_id) REFERENCES zooanimals(auto_id)
+);
+
+INSERT OR IGNORE INTO gene_species (geneid, auto_id)
+SELECT genes.geneid, zooanimals.auto_id
+FROM genes
+JOIN zooanimals
+ON LOWER(genes.org_name) LIKE LOWER(zooanimals.scientific_name);
+
+CREATE TABLE species_journals (
+    auto_id INTEGER,
+    pmid INTEGER,
+    PRIMARY KEY (auto_id, pmid),
+    FOREIGN KEY (auto_id) REFERENCES zooanimals(auto_id),
+    FOREIGN KEY (pmid) REFERENCES journals(pmid)
+);
+
+INSERT INTO species_journals (auto_id, pmid)
+SELECT zooanimals.auto_id, journals.pmid
+FROM zooanimals
+JOIN journals
+ON journals.title LIKE '%' || zooanimals.scientific_name || '%';
+
+CREATE TABLE animal_classification (
+    auto_id INTEGER,
+    hagrid INTEGER,
+    PRIMARY KEY (auto_id, hagrid),
+    FOREIGN KEY (auto_id) REFERENCES zooanimals(auto_id),
+    FOREIGN KEY (hagrid) REFERENCES classification(hagrid)
+);
+
+INSERT INTO animal_classification (auto_id, hagrid)
+SELECT zooanimals.auto_id, classification.hagrid
+FROM zooanimals
+JOIN classification
+ON (LOWER(zooanimals.animal_name) LIKE LOWER(classification.common_name));

@@ -1,0 +1,13 @@
+CREATE TABLE gene_to_species( 
+gene_id INTEGER NOT NULL, 
+species_id INTEGER NOT NULL, 
+PRIMARY KEY (gene_id, species_id), 
+FOREIGN KEY (gene_id) REFERENCES new_gene(gene_id), 
+FOREIGN KEY (species_id) REFERENCES species(species_id));
+
+With the command statement above we were able to create a new table named gene_to_species that had the attributes of gene_id and species_id which are the primary keys and foreign keys as well. The purpose is making this table a connection table for the many to many relationships that they share.
+
+CREATE TABLE new_gene( gene_id INTEGER PRIMARY KEY, name TEXT NULL, full_name TEXT NULL, chromosome TEXT NULL, map_location INTEGER NOT NULL, description TEXT NULL, gene_type TEXT NULL, modification_date INTEGER NOT NULL);
+
+	With the creation of new_gene table that had the attributes of gene_id which was the primary key within this table, 
+age <- read.table("../Delete/anage_data.txt",header = TRUE, sep = "\t")
